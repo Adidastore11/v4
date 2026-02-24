@@ -4,12 +4,12 @@ set -euo pipefail
 apt-get update -y
 apt-get install -y jq curl
 
-CF_ID="emaill@gmail.com"
-CF_KEY="apikeyglobal"
-DOMAIN="domainlu.web.id"
+CF_ID="didayutuber28@gmail.com"
+CF_KEY="77f2c9d98b423884fb50e422a02287d8f84b3"
+DOMAIN="gachorr.web.id"
 
 # Random subdomain test1 - test10 (1x saja)
-SUB="test$((RANDOM % 10 + 1))"
+SUB="test$((RANDOM % 50 + 1))"
 
 IP=$(cat /usr/bin/ipsave)
 

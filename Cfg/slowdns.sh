@@ -10,7 +10,7 @@ REDBG="\033[41;37m"
 NC='\e[0m'
 REPOS="https://raw.githubusercontent.com/Adidastore11/v4/main/"
 ns_domain_cloudflare() {
-	DOMAIN="xdg-boost.my.id"
+	DOMAIN="gachorr.web.id"
 	DOMAIN_PATH=$(cat /etc/xray/domain)
 	echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 	echo -e "           Masukan Subdomain              "
@@ -20,8 +20,8 @@ ns_domain_cloudflare() {
 	if [ -z $SUB ]; then
     exit
     else
-	SUB_DOMAIN=${SUB}."xdg-boost.my.id"
-	NS_DOMAIN=dns.${SUB_DOMAIN}
+	SUB_DOMAIN=${SUB}."gachorr.web.id"
+	NS_DOMAIN=ns-${SUB_DOMAIN}
 	CF_ID=didayutuber28@gmail.com
         CF_KEY=77f2c9d98b423884fb50e422a02287d8f84b3
 	set -euo pipefail

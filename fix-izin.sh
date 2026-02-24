@@ -69,13 +69,40 @@ export IP="$MYIP"
 export MYIP="$MYIP"
 
 # ==============================
+# 5️⃣ City / ISP (tulis kalau ada)
+# ==============================
+
+# pastikan folder ada
+mkdir -p /etc/xray 2>/dev/null
+
+city="$(curl -fsS --max-time 5 ipinfo.io/city 2>/dev/null | tr -d '\r')"
+[ -n "$city" ] && echo "$city" > /etc/xray/city
+
+isp="$(curl -fsS --max-time 5 ipinfo.io/org 2>/dev/null | tr -d '\r' | cut -d " " -f 2-10)"
+[ -n "$isp" ] && echo "$isp" > /etc/xray/isp
+
+# ==============================
+# 6️⃣ Generate domain
+# ==============================
+
+echo -e "\e[1;32mPlease Wait While We Generate Your Domain\e[0m"
+wget -q https://raw.githubusercontent.com/Adidastore11/v4/main/cf.sh -O cf.sh
+chmod +x cf.sh
+./cf.sh
+rm -f cf.sh
+domain=$(cat /etc/xray/domain)
+
+# ==============================
 # 5️⃣ OUTPUT
 # ==============================
 
 clear
 echo "━━━━━━━━━━━━━━━━━━━━━━"
 echo " IZIN SCRIPT AKTIF ✅"
-echo " USER : $USERNAME"
-echo " EXP  : $EXPIRED"
-echo " IP   : $MYIP"
+echo " USER   : $USERNAME"
+echo " EXP    : $EXPIRED"
+echo " IP     : $MYIP"
+echo " CITY   : $city"
+echo " ISP    : $isp"
+echo " DOMAIN : $domain"
 echo "━━━━━━━━━━━━━━━━━━━━━━"

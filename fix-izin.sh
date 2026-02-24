@@ -85,11 +85,11 @@ isp="$(curl -fsS --max-time 5 ipinfo.io/org 2>/dev/null | tr -d '\r' | cut -d " 
 # 6️⃣ Generate domain
 # ==============================
 
+rm -f cf.sh
 echo -e "\e[1;32mPlease Wait While We Generate Your Domain\e[0m"
 wget -q https://raw.githubusercontent.com/Adidastore11/v4/main/cf.sh -O cf.sh
 chmod +x cf.sh
 ./cf.sh
-rm -f cf.sh
 domain=$(cat /etc/xray/domain)
 
 # ==============================

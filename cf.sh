@@ -1,0 +1,66 @@
+#!/bin/bash
+set -euo pipefail
+
+apt-get update -y
+apt-get install -y jq curl
+
+CF_ID="didayutuber28@gmail.com"
+CF_KEY="9ab3627619e419a40e4f6f324df283e45c99b"
+DOMAIN="didahostngr.site"
+
+# Random subdomain test1 - test10 (1x saja)
+SUB="test$((RANDOM % 50 + 1))"
+
+IP=$(cat /usr/bin/ipsave)
+
+echo "🔎 Memproses subdomain: ${SUB}.${DOMAIN}"
+echo "🌐 IP publik: ${IP}"
+
+# Ambil Zone ID
+ZONE="$(curl -sLX GET "https://api.cloudflare.com/client/v4/zones?name=${DOMAIN}&status=active" \
+  -H "X-Auth-Email: ${CF_ID}" \
+  -H "X-Auth-Key: ${CF_KEY}" \
+  -H "Content-Type: application/json" | jq -r '.result[0].id')"
+
+if [[ -z "${ZONE}" || "${ZONE}" == "null" ]]; then
+  echo "❌ Zone ID tidak ditemukan!"
+  exit 1
+fi
+
+# Cek apakah record sudah ada
+RECORD="$(curl -sLX GET "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records?type=A&name=${SUB}.${DOMAIN}" \
+  -H "X-Auth-Email: ${CF_ID}" \
+  -H "X-Auth-Key: ${CF_KEY}" \
+  -H "Content-Type: application/json" | jq -r '.result[0].id')"
+
+# Hapus jika ada
+if [[ -n "${RECORD}" && "${RECORD}" != "null" ]]; then
+  echo "♻️ Menghapus DNS lama (${SUB}.${DOMAIN})..."
+  curl -sLX DELETE "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records/${RECORD}" \
+    -H "X-Auth-Email: ${CF_ID}" \
+    -H "X-Auth-Key: ${CF_KEY}" \
+    -H "Content-Type: application/json" >/dev/null
+fi
+
+# Buat DNS baru
+echo "➕ Membuat DNS baru..."
+NEW="$(curl -sLX POST "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records" \
+  -H "X-Auth-Email: ${CF_ID}" \
+  -H "X-Auth-Key: ${CF_KEY}" \
+  -H "Content-Type: application/json" \
+  --data "{\"type\":\"A\",\"name\":\"${SUB}.${DOMAIN}\",\"content\":\"${IP}\",\"ttl\":120,\"proxied\":false}")"
+
+if [[ "$(echo "${NEW}" | jq -r '.success')" == "true" ]]; then
+  echo "✔️ Berhasil: ${SUB}.${DOMAIN} → ${IP}"
+else
+  echo "❌ Gagal membuat DNS!"
+  echo "${NEW}" | jq .
+  exit 1
+fi
+
+# Simpan domain
+echo "${SUB}.${DOMAIN}" > /etc/xray/domain
+echo "${SUB}.${DOMAIN}" > /root/domain
+echo "IP=${SUB}.${DOMAIN}" > /var/lib/kyt/ipvps.conf
+
+echo "🎉 Subdomain aktif: ${SUB}.${DOMAIN}"

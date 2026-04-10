@@ -6,7 +6,7 @@ apt-get install -y jq curl
 
 CF_ID="didayutuber28@gmail.com"
 CF_KEY="9ab3627619e419a40e4f6f324df283e45c99b"
-DOMAIN="didahostngr.site"
+DOMAIN="kingkonfig.my.id"
 
 # Random subdomain test1 - test10 (1x saja)
 SUB="test$((RANDOM % 50 + 1))"
